@@ -27,7 +27,8 @@ func IsProvisionable(pod *v1.Pod) bool {
 		!IsPreempting(pod) &&
 		FailedToSchedule(pod) &&
 		!IsOwnedByDaemonSet(pod) &&
-		!IsOwnedByNode(pod)
+		!IsOwnedByNode(pod) &&
+		!IsPodSkipped(pod)
 }
 
 func FailedToSchedule(pod *v1.Pod) bool {
@@ -66,6 +67,10 @@ func IsOwnedByNode(pod *v1.Pod) bool {
 	return IsOwnedBy(pod, []schema.GroupVersionKind{
 		{Version: "v1", Kind: "Node"},
 	})
+}
+
+func IsPodSkipped(pod *v1.Pod) bool {
+	return pod.Annotations["karpenter.sh/skipped"] == "true"
 }
 
 func IsOwnedBy(pod *v1.Pod, gvks []schema.GroupVersionKind) bool {

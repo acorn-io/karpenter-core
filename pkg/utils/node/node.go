@@ -39,7 +39,8 @@ func GetNodePods(ctx context.Context, kubeClient client.Client, nodes ...*v1.Nod
 			if pod.IsOwnedByNode(&podList.Items[i]) ||
 				pod.IsOwnedByDaemonSet(&podList.Items[i]) ||
 				pod.IsTerminal(&podList.Items[i]) ||
-				pod.IsTerminating(&podList.Items[i]) {
+				pod.IsTerminating(&podList.Items[i]) ||
+				pod.IsPodSkipped(&podList.Items[i]) {
 				continue
 			}
 			pods = append(pods, &podList.Items[i])
